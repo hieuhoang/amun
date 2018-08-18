@@ -29,6 +29,23 @@ NthElement::~NthElement()
   //cerr << "FOO2" << endl;
 }
 
+__global__ void gCalcBeam(mblas::VectorWrapper<unsigned> batchPosition,
+                          mblas::VectorWrapper<unsigned> cumBeamSizes,
+                          const bool isFirst,
+                          const unsigned vocabSize,
+                          mblas::VectorWrapper<unsigned> beamSizes)
+{
+  cumBeamSizes[0] = 0;
+  batchPosition[0] = 0;
+
+  for (unsigned i = 0; i < beamSizes.size(); ++i) {
+
+    cumBeamSizes[i + 1] = cumBeamSizes[i] + beamSizes[i];
+    batchPosition[i + 1] = ((isFirst) ? (i + 1) : cumBeamSizes[i + 1]) * vocabSize;
+  }
+
+}
+
 void NthElement::getNBestList(const std::vector<unsigned>& beamSizes, mblas::Tensor& Probs,
                   std::vector<float>& outCosts, std::vector<unsigned>& outKeys,
                   const bool isFirst) {
@@ -41,6 +58,17 @@ void NthElement::getNBestList(const std::vector<unsigned>& beamSizes, mblas::Ten
   cerr << "isFirst=" << isFirst << endl;
   cerr << endl;
   */
+  const mblas::Vector<unsigned> d_beamSizes(beamSizes);
+  d_batchPosition.newSize(beamSizes.size() + 1);
+  d_cumBeamSizes.newSize(beamSizes.size() + 1);
+  assert(d_batchPosition.size() == d_cumBeamSizes.size());
+
+  mblas::VectorWrapper<unsigned> beamSizesWrap(d_beamSizes);
+  mblas::VectorWrapper<unsigned> batchPositionWrap(d_batchPosition);
+  mblas::VectorWrapper<unsigned> cumBeamSizesWrap(d_cumBeamSizes);
+
+  gCalcBeam<<<1,1>>>(batchPositionWrap, cumBeamSizesWrap, isFirst, Probs.dim(1), beamSizesWrap);
+
   std::vector<unsigned> cummulatedBeamSizes(beamSizes.size() + 1);
   std::vector<unsigned> batchFirstElementIdxs(beamSizes.size() + 1);
   cummulatedBeamSizes[0] = 0;
@@ -84,20 +112,6 @@ void NthElement::getNBestList(mblas::Tensor &probs,
   const unsigned numBatches = batchFirstElementIdxs.size() - 1;
 
   d_out.newSize(maxBatchSize_ * numBlocks);
-
-  //cerr << "cummulatedBeamSizes=" << cummulatedBeamSizes.size() << endl;
-  d_batchPosition.newSize(batchFirstElementIdxs.size());
-  d_cumBeamSizes.newSize(cummulatedBeamSizes.size());
-  assert(d_batchPosition.size() == d_cumBeamSizes.size());
-
-  mblas::copy(batchFirstElementIdxs.data(),
-              batchFirstElementIdxs.size(),
-              d_batchPosition.data(),
-              cudaMemcpyHostToDevice);
-  mblas::copy(cummulatedBeamSizes.data(),
-              cummulatedBeamSizes.size(),
-              d_cumBeamSizes.data(),
-              cudaMemcpyHostToDevice);
 
   mblas::VectorWrapper<NthOut> outWrap(d_out);
   mblas::TensorWrapper<float> probsWrap(probs);
