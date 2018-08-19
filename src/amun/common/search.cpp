@@ -63,6 +63,20 @@ Search::~Search()
 
 }
 
+States Search::Encode(const Sentences& sentences)
+{
+  bestHyps_->BeginSentenceState(sentences.size());
+
+  States states;
+  for (auto& scorer : scorers_) {
+    scorer->Encode(sentences);
+    auto state = scorer->NewState();
+    scorer->BeginSentenceState(*state, sentences.size());
+    states.emplace_back(state);
+  }
+  return states;
+}
+
 void Search::CleanAfterTranslation()
 {
   for (auto scorer : scorers_) {
@@ -80,7 +94,7 @@ std::shared_ptr<Histories> Search::Translate(const Sentences& sentences) {
 
   States states = Encode(sentences);
   States nextStates = NewStates();
-  std::vector<unsigned> beamSizes(sentences.size(), 1);
+  std::vector<unsigned> &beamSizes = bestHyps_->GetBeamSizes< std::vector<unsigned> >();
 
   std::shared_ptr<Histories> histories(new Histories(sentences, normalizeScore_, maxLengthMult_));
   Beam prevHyps = histories->GetFirstHyps();
@@ -100,7 +114,7 @@ std::shared_ptr<Histories> Search::Translate(const Sentences& sentences) {
     }
     //cerr << "beamSizes=" << Debug(beamSizes, 1) << endl;
 
-    bool hasSurvivors = CalcBeam(histories, beamSizes, prevHyps, states, nextStates, decoderStep);
+    bool hasSurvivors = CalcBeam(histories, prevHyps, states, nextStates, decoderStep);
     if (!hasSurvivors) {
       break;
     }
@@ -118,25 +132,15 @@ std::shared_ptr<Histories> Search::Translate(const Sentences& sentences) {
   return histories;
 }
 
-States Search::Encode(const Sentences& sentences) {
-  States states;
-  for (auto& scorer : scorers_) {
-    scorer->Encode(sentences);
-    auto state = scorer->NewState();
-    scorer->BeginSentenceState(*state, sentences.size());
-    states.emplace_back(state);
-  }
-  return states;
-}
-
 bool Search::CalcBeam(
     std::shared_ptr<Histories>& histories,
-    std::vector<unsigned>& beamSizes,
     Beam& prevHyps,
     States& states,
     States& nextStates,
     unsigned decoderStep)
 {
+    std::vector<unsigned> &beamSizes = bestHyps_->GetBeamSizes< std::vector<unsigned> >();
+
     unsigned batchSize = beamSizes.size();
     Beams beams(batchSize);
     bestHyps_->CalcBeam(prevHyps, scorers_, filterIndices_, beams, beamSizes);

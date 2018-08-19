@@ -17,6 +17,17 @@ BestHyps::BestHyps(const God &god)
   }
 }
 
+void BestHyps::BeginSentenceState(unsigned batchSize)
+{
+  beamSizes_.clear();
+  beamSizes_.resize(batchSize, 1);
+}
+
+void* BestHyps::GetBeamSizes()
+{
+  return &beamSizes_;
+}
+
 void BestHyps::DisAllowUNK(mblas::Tensor& Prob) {
   SetColumn(Prob, UNK_ID, std::numeric_limits<float>::lowest());
 }
