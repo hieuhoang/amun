@@ -27,6 +27,7 @@ class Search {
 
     bool CalcBeam(
     		std::shared_ptr<Histories>& histories,
+    		std::vector<unsigned>& beamSizes,
         Beam& prevHyps,
     		States& states,
     		States& nextStates,

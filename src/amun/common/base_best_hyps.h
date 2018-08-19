@@ -23,17 +23,6 @@ class BaseBestHyps
         std::vector<Beam>& beams,
         const std::vector<unsigned>& beamSizes) = 0;
 
-    virtual void BeginSentenceState(unsigned batchSize) = 0;
-    virtual void* GetBeamSizes() = 0;
-
-    template<class T>
-    T &GetBeamSizes()
-    {
-      void *t = GetBeamSizes();
-      T &ret = *static_cast<T*>(t);
-      return ret;
-    }
-
   protected:
     const God &god_;
     const bool forbidUNK_;
