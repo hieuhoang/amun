@@ -1,4 +1,7 @@
 #include "best_hyps.h"
+#include "common/beam.h"
+#include "common/history.h"
+#include "common/histories.h"
 
 using namespace std;
 
@@ -238,6 +241,53 @@ void BestHyps::GetPairs(mblas::Vector<NthOutBatch> &nBest,
     outKeys[i] = hostVec[i].ind;
     outValues[i] = hostVec[i].score;
   }
+}
+
+bool BestHyps::CalcBeam(
+    const std::vector<ScorerPtr>& scorers,
+    const Words &filterIndices,
+
+    std::shared_ptr<Histories>& histories,
+    Beam& prevHyps,
+    States& states,
+    States& nextStates,
+    unsigned decoderStep)
+{
+    unsigned batchSize = beamSizes_.size();
+    Beams beams(batchSize);
+    CalcBeam(prevHyps, scorers, filterIndices, beams);
+    histories->Add(beams);
+
+    //cerr << "batchSize=" << batchSize << endl;
+    histories->SetActive(false);
+    Beam survivors;
+    for (unsigned batchId = 0; batchId < batchSize; ++batchId) {
+      const History &hist = *histories->at(batchId);
+      unsigned maxLength = hist.GetMaxLength();
+
+      //cerr << "beamSizes[batchId]=" << batchId << " " << beamSizes[batchId] << " " << maxLength << endl;
+      for (auto& h : beams[batchId]) {
+        if (decoderStep < maxLength && h->GetWord() != EOS_ID) {
+          survivors.push_back(h);
+
+          histories->SetActive(batchId, true);
+        } else {
+          --beamSizes_[batchId];
+        }
+      }
+    }
+
+    if (survivors.size() == 0) {
+      return false;
+    }
+
+    for (unsigned i = 0; i < scorers.size(); i++) {
+      scorers[i]->AssembleBeamState(*nextStates[i], survivors, *states[i]);
+    }
+
+    //cerr << "survivors=" << survivors.size() << endl;
+    prevHyps.swap(survivors);
+    return true;
 }
 
 } // namespace

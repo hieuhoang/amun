@@ -9,6 +9,8 @@
 
 namespace amunmt {
 
+class Histories;
+
 class BaseBestHyps
 {
   public:
@@ -41,6 +43,18 @@ class BaseBestHyps
       return ret;
     }
     */
+
+    virtual bool CalcBeam(
+        const std::vector<ScorerPtr>& scorers,
+        const Words &filterIndices,
+
+        std::shared_ptr<Histories>& histories,
+        Beam& prevHyps,
+        States& states,
+        States& nextStates,
+        unsigned decoderStep) = 0;
+
+
   protected:
     const God &god_;
     const bool forbidUNK_;

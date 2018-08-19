@@ -43,6 +43,16 @@ class BestHyps : public BaseBestHyps
     void BeginSentenceState(unsigned batchSize);
     void* GetBeamSizes();
 
+    bool CalcBeam(
+        const std::vector<ScorerPtr>& scorers,
+        const Words &filterIndices,
+
+        std::shared_ptr<Histories>& histories,
+        Beam& prevHyps,
+        States& states,
+        States& nextStates,
+        unsigned decoderStep);
+
   private:
     std::unique_ptr<NthElement> nthElement_;
     mblas::Vector<unsigned> keys_;

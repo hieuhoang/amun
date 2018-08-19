@@ -114,7 +114,13 @@ std::shared_ptr<Histories> Search::Translate(const Sentences& sentences) {
     }
     //cerr << "beamSizes=" << Debug(beamSizes, 1) << endl;
 
-    bool hasSurvivors = CalcBeam(histories, prevHyps, states, nextStates, decoderStep);
+    bool hasSurvivors = bestHyps_->CalcBeam(scorers_,
+                                            filterIndices_,
+                                            histories,
+                                            prevHyps,
+                                            states,
+                                            nextStates,
+                                            decoderStep);
     if (!hasSurvivors) {
       break;
     }
@@ -130,52 +136,6 @@ std::shared_ptr<Histories> Search::Translate(const Sentences& sentences) {
 
   LOG(progress)->info("Search took {}", timer.format(3, "%ws"));
   return histories;
-}
-
-bool Search::CalcBeam(
-    std::shared_ptr<Histories>& histories,
-    Beam& prevHyps,
-    States& states,
-    States& nextStates,
-    unsigned decoderStep)
-{
-    std::vector<unsigned> &beamSizes = bestHyps_->GetBeamSizes< std::vector<unsigned> >();
-
-    unsigned batchSize = beamSizes.size();
-    Beams beams(batchSize);
-    bestHyps_->CalcBeam(prevHyps, scorers_, filterIndices_, beams);
-    histories->Add(beams);
-
-    //cerr << "batchSize=" << batchSize << endl;
-    histories->SetActive(false);
-    Beam survivors;
-    for (unsigned batchId = 0; batchId < batchSize; ++batchId) {
-      const History &hist = *histories->at(batchId);
-      unsigned maxLength = hist.GetMaxLength();
-
-      //cerr << "beamSizes[batchId]=" << batchId << " " << beamSizes[batchId] << " " << maxLength << endl;
-      for (auto& h : beams[batchId]) {
-        if (decoderStep < maxLength && h->GetWord() != EOS_ID) {
-          survivors.push_back(h);
-
-          histories->SetActive(batchId, true);
-        } else {
-          --beamSizes[batchId];
-        }
-      }
-    }
-
-    if (survivors.size() == 0) {
-      return false;
-    }
-
-    for (unsigned i = 0; i < scorers_.size(); i++) {
-      scorers_[i]->AssembleBeamState(*nextStates[i], survivors, *states[i]);
-    }
-
-    //cerr << "survivors=" << survivors.size() << endl;
-    prevHyps.swap(survivors);
-    return true;
 }
 
 
