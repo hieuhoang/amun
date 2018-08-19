@@ -39,7 +39,7 @@ class BestHyps : public BaseBestHyps
         const std::vector<ScorerPtr>& scorers,
         const Words& filterIndices,
         std::vector<Beam>& beams,
-        std::vector<unsigned>& beamSizes);
+        const std::vector<unsigned>& beamSizes);
 
   private:
     std::unique_ptr<NthElement> nthElement_;

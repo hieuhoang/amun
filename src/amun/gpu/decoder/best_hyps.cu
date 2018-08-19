@@ -70,7 +70,7 @@ void  BestHyps::CalcBeam(
     const std::vector<ScorerPtr>& scorers,
     const Words& filterIndices,
     std::vector<Beam>& beams,
-    std::vector<unsigned>& beamSizes)
+    const std::vector<unsigned>& beamSizes)
 {
   BEGIN_TIMER("CalcBeam");
 

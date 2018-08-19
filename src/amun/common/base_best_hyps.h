@@ -21,7 +21,7 @@ class BaseBestHyps
         const std::vector<ScorerPtr>& scorers,
         const Words& filterIndices,
         std::vector<Beam>& beams,
-        std::vector<unsigned>& beamSizes) = 0;
+        const std::vector<unsigned>& beamSizes) = 0;
 
   protected:
     const God &god_;

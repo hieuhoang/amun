@@ -8,6 +8,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/common/git_version.cpp.in"
 list(APPEND SOURCES "${CMAKE_CURRENT_BINARY_DIR}/common/git_version.cpp")
 
 
+if(CPU)
 add_library(cpumode OBJECT
   cpu/mblas/phoenix_functions.cpp
   cpu/mblas/tensor.cpp
@@ -40,6 +41,11 @@ add_library(cpumode OBJECT
   #fpga/debug-devices.cpp
   #fpga/hello_world.cpp
 )
+else(CPU)
+add_library(cpumode OBJECT
+  cpu/mblas/tensor.cpp
+)
+endif(CPU)  
 
 add_library(libcommon OBJECT
   ${CMAKE_CURRENT_BINARY_DIR}/common/git_version.cpp
