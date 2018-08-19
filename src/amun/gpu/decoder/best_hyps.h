@@ -26,7 +26,7 @@ class BestHyps : public BaseBestHyps
     void DisAllowUNK(mblas::Tensor& Prob);
 
     // standard nth_element
-    void FindBests(const std::vector<unsigned>& beamSizes, mblas::Tensor& Probs,
+    void FindBests(mblas::Tensor& Probs,
                    std::vector<float>& outCosts,
                    std::vector<unsigned>& outKeys,
                    const bool isFirst);
@@ -38,8 +38,7 @@ class BestHyps : public BaseBestHyps
         const Beam& prevHyps,
         const std::vector<ScorerPtr>& scorers,
         const Words& filterIndices,
-        std::vector<Beam>& beams,
-        const std::vector<unsigned>& beamSizes);
+        std::vector<Beam>& beams);
 
     void BeginSentenceState(unsigned batchSize);
     void* GetBeamSizes();
@@ -52,14 +51,13 @@ class BestHyps : public BaseBestHyps
     std::vector<unsigned> beamSizes_;
 
     // fast fused softmax and nth_element
-    void FindBests(const std::vector<unsigned>& beamSizes, mblas::Tensor& Probs,
+    void FindBests(mblas::Tensor& Probs,
     		mblas::Vector<NthOutBatch> &nBest,
                    std::vector<float>& outCosts,
                    std::vector<unsigned>& outKeys,
                    const bool isFirst);
 
-    void getNBestList(const std::vector<unsigned>& beamSizes,
-                      mblas::Tensor& Probs,
+    void getNBestList(mblas::Tensor& Probs,
                       mblas::Vector<NthOutBatch> &nBest,
                       std::vector<float>& outCosts,
                       std::vector<unsigned>& outKeys,
