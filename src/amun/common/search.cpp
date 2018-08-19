@@ -107,13 +107,6 @@ std::shared_ptr<Histories> Search::Translate(const Sentences& sentences) {
       scorers_[i]->Decode(*states[i], *nextStates[i], beamSizes);
     }
 
-    if (decoderStep == 0) {
-      for (auto& beamSize : beamSizes) {
-        beamSize = maxBeamSize_;
-      }
-    }
-    //cerr << "beamSizes=" << Debug(beamSizes, 1) << endl;
-
     bool hasSurvivors = bestHyps_->CalcBeam(scorers_,
                                             filterIndices_,
                                             histories,

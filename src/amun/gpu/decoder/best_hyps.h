@@ -21,7 +21,7 @@ class BestHyps : public BaseBestHyps
 {
   public:
     BestHyps(const BestHyps &copy) = delete;
-    BestHyps(const God &god);
+    BestHyps(const God &god, unsigned maxBeamSize);
 
     void DisAllowUNK(mblas::Tensor& Prob);
 

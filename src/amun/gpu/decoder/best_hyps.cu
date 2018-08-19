@@ -8,8 +8,8 @@ using namespace std;
 namespace amunmt {
 namespace GPU {
 
-BestHyps::BestHyps(const God &god)
-      : BaseBestHyps(god),
+BestHyps::BestHyps(const God &god, unsigned maxBeamSize)
+      : BaseBestHyps(god, maxBeamSize),
         keys_(god.Get<unsigned>("beam-size") * god.Get<unsigned>("mini-batch")),
         costs_(god.Get<unsigned>("beam-size") * god.Get<unsigned>("mini-batch")),
         maxBeamSize_(god.Get<unsigned>("beam-size"))
@@ -95,6 +95,13 @@ void  BestHyps::CalcBeam(
   for (auto& h : prevHyps) {
     vCosts.push_back(h->GetCost());
   }
+  const bool isFirst = (vCosts[0] == 0.0f) ? true : false;
+
+  if (isFirst) {
+    for (auto& beamSize : beamSizes_) {
+      beamSize = maxBeamSize_;
+    }
+  }
 
   mblas::copy(vCosts.data(),
               vCosts.size(),
@@ -107,7 +114,6 @@ void  BestHyps::CalcBeam(
   std::vector<float> bestCosts;
   std::vector<unsigned> bestKeys;
 
-  const bool isFirst = (vCosts[0] == 0.0f) ? true : false;
 
   if (god_.UseFusedSoftmax()) {
     const mblas::Tensor& b4 = *static_cast<const mblas::Tensor*>(scorers[0]->GetBias());

@@ -14,7 +14,7 @@ class Histories;
 class BaseBestHyps
 {
   public:
-    BaseBestHyps(const God &god);
+    BaseBestHyps(const God &god, unsigned maxBeamSize);
 
     BaseBestHyps(const BaseBestHyps&) = delete;
 
@@ -61,6 +61,7 @@ class BaseBestHyps
     const bool isInputFiltered_;
     const bool returnAttentionWeights_;
     const std::map<std::string, float> weights_;
+    const unsigned maxBeamSize_;
 
 };
 
