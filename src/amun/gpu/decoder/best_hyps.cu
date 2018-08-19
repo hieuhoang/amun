@@ -32,22 +32,22 @@ void BestHyps::DisAllowUNK(mblas::Tensor& Prob) {
   SetColumn(Prob, UNK_ID, std::numeric_limits<float>::lowest());
 }
 
-void BestHyps::FindBests(const std::vector<unsigned>& beamSizes, mblas::Tensor& Probs,
+void BestHyps::FindBests(mblas::Tensor& Probs,
                std::vector<float>& outCosts,
                std::vector<unsigned>& outKeys,
                const bool isFirst)
 {
-  nthElement_->getNBestList(beamSizes, Probs, outCosts, outKeys, isFirst);
+  nthElement_->getNBestList(beamSizes_, Probs, outCosts, outKeys, isFirst);
 }
 
 // fast fused softmax and nth_element
-void BestHyps::FindBests(const std::vector<unsigned>& beamSizes, mblas::Tensor& Probs,
+void BestHyps::FindBests(mblas::Tensor& Probs,
                mblas::Vector<NthOutBatch> &nBest,
                std::vector<float>& outCosts,
                std::vector<unsigned>& outKeys,
                const bool isFirst)
 {
-  getNBestList(beamSizes, Probs, nBest, outCosts, outKeys, isFirst);
+  getNBestList(Probs, nBest, outCosts, outKeys, isFirst);
 }
 
 std::vector<SoftAlignmentPtr> BestHyps::GetAlignments(const std::vector<ScorerPtr>& scorers,
@@ -80,8 +80,7 @@ void  BestHyps::CalcBeam(
     const Beam& prevHyps,
     const std::vector<ScorerPtr>& scorers,
     const Words& filterIndices,
-    std::vector<Beam>& beams,
-    const std::vector<unsigned>& beamSizes)
+    std::vector<Beam>& beams)
 {
   BEGIN_TIMER("CalcBeam");
 
@@ -100,7 +99,7 @@ void  BestHyps::CalcBeam(
               cudaMemcpyHostToDevice);
   //mblas::copy(vCosts.begin(), vCosts.end(), costs_.begin());
 
-  unsigned beamSizeSum = std::accumulate(beamSizes.begin(), beamSizes.end(), 0);
+  unsigned beamSizeSum = std::accumulate(beamSizes_.begin(), beamSizes_.end(), 0);
 
   std::vector<float> bestCosts;
   std::vector<unsigned> bestKeys;
@@ -116,11 +115,11 @@ void  BestHyps::CalcBeam(
     //cerr << "doSoftmax=" << doSoftmax << endl;
 
     BEGIN_TIMER("GetProbs.LogSoftmaxAndNBest");
-    mblas::LogSoftmaxAndNBest(nBest, Probs, b4, costs_, forbidUNK_, maxBeamSize_, beamSizes, beamSizeSum, isFirst, requireProb);
+    mblas::LogSoftmaxAndNBest(nBest, Probs, b4, costs_, forbidUNK_, maxBeamSize_, beamSizes_, beamSizeSum, isFirst, requireProb);
     PAUSE_TIMER("GetProbs.LogSoftmaxAndNBest");
     //std::cerr << "2Probs=" << Probs.Debug(1) << std::endl;
 
-    FindBests(beamSizes, Probs, nBest, bestCosts, bestKeys, isFirst);
+    FindBests(Probs, nBest, bestCosts, bestKeys, isFirst);
   }
   else {
     BroadcastVecColumn(weights_.at(scorers[0]->GetName()) * _1 + _2, Probs, costs_);
@@ -135,7 +134,7 @@ void  BestHyps::CalcBeam(
       DisAllowUNK(Probs);
     }
 
-    FindBests(beamSizes, Probs, bestCosts, bestKeys, isFirst);
+    FindBests(Probs, bestCosts, bestKeys, isFirst);
   }
 
   std::vector<std::vector<float>> breakDowns;
@@ -152,8 +151,8 @@ void  BestHyps::CalcBeam(
 
   std::map<unsigned, unsigned> batchMap;
   unsigned tmp = 0;
-  for (unsigned batchID = 0; batchID < beamSizes.size(); ++batchID) {
-    for (unsigned t = 0; t < beamSizes[batchID]; ++t) {
+  for (unsigned batchID = 0; batchID < beamSizes_.size(); ++batchID) {
+    for (unsigned t = 0; t < beamSizes_[batchID]; ++t) {
       batchMap[tmp++] = batchID;
     }
   }
@@ -204,12 +203,11 @@ void  BestHyps::CalcBeam(
 }
 
 //////////////////////////////////////////////////////////////////////////
-void BestHyps::getNBestList(const std::vector<unsigned>& beamSizes,
-                  mblas::Tensor& Probs,
-                  mblas::Vector<NthOutBatch> &nBest,
-                  std::vector<float>& outCosts,
-                  std::vector<unsigned>& outKeys,
-                  const bool isFirst) const
+void BestHyps::getNBestList(mblas::Tensor& Probs,
+                            mblas::Vector<NthOutBatch> &nBest,
+                            std::vector<float>& outCosts,
+                            std::vector<unsigned>& outKeys,
+                            const bool isFirst) const
 {
   GetPairs(nBest, outKeys, outCosts);
   assert(outCosts.size() == outKeys.size());

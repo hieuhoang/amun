@@ -20,8 +20,7 @@ class BaseBestHyps
         const Beam& prevHyps,
         const std::vector<ScorerPtr>& scorers,
         const Words& filterIndices,
-        std::vector<Beam>& beams,
-        const std::vector<unsigned>& beamSizes) = 0;
+        std::vector<Beam>& beams) = 0;
 
     virtual void BeginSentenceState(unsigned batchSize) = 0;
     virtual void* GetBeamSizes() = 0;
