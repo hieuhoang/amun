@@ -25,24 +25,15 @@ class BaseBestHyps
         std::vector<Beam>& beams) = 0;
 
     virtual void BeginSentenceState(unsigned batchSize) = 0;
-    virtual void* GetBeamSizes() = 0;
+    virtual const void* GetBeamSizes() const = 0;
 
     template<class T>
-    T &GetBeamSizes()
+    const T &GetBeamSizes() const
     {
-      void *t = GetBeamSizes();
-      T &ret = *static_cast<T*>(t);
-      return ret;
-    }
-    /*
-    template<class T>
-    T &GetBeamSizesConst() const
-    {
-      void *t = GetBeamSizes();
+      const void *t = GetBeamSizes();
       const T &ret = *static_cast<const T*>(t);
       return ret;
     }
-    */
 
     virtual bool CalcBeam(
         const std::vector<ScorerPtr>& scorers,

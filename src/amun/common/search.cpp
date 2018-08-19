@@ -94,7 +94,7 @@ std::shared_ptr<Histories> Search::Translate(const Sentences& sentences) {
 
   States states = Encode(sentences);
   States nextStates = NewStates();
-  std::vector<unsigned> &beamSizes = bestHyps_->GetBeamSizes< std::vector<unsigned> >();
+  const std::vector<unsigned> &beamSizes = bestHyps_->GetBeamSizes< std::vector<unsigned> >();
 
   std::shared_ptr<Histories> histories(new Histories(sentences, normalizeScore_, maxLengthMult_));
   Beam prevHyps = histories->GetFirstHyps();

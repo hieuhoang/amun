@@ -26,7 +26,7 @@ void BestHyps::BeginSentenceState(unsigned batchSize)
   beamSizes_.resize(batchSize, 1);
 }
 
-void* BestHyps::GetBeamSizes()
+const void* BestHyps::GetBeamSizes() const
 {
   return &beamSizes_;
 }

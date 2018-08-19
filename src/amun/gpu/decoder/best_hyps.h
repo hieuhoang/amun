@@ -41,7 +41,7 @@ class BestHyps : public BaseBestHyps
         std::vector<Beam>& beams);
 
     void BeginSentenceState(unsigned batchSize);
-    void* GetBeamSizes();
+    const void* GetBeamSizes() const;
 
     bool CalcBeam(
         const std::vector<ScorerPtr>& scorers,
