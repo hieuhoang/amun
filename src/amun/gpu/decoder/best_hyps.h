@@ -41,11 +41,16 @@ class BestHyps : public BaseBestHyps
         std::vector<Beam>& beams,
         const std::vector<unsigned>& beamSizes);
 
+    void BeginSentenceState(unsigned batchSize);
+    void* GetBeamSizes();
+
   private:
     std::unique_ptr<NthElement> nthElement_;
     mblas::Vector<unsigned> keys_;
     mblas::Vector<float> costs_;
     unsigned maxBeamSize_;
+
+    std::vector<unsigned> beamSizes_;
 
     // fast fused softmax and nth_element
     void FindBests(const std::vector<unsigned>& beamSizes, mblas::Tensor& Probs,
