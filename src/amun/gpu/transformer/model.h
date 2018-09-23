@@ -38,7 +38,7 @@ public:
 protected:
 	std::vector<EncoderBunch> encoderBunches_;
 
-	void Load(const NpzConverter& model, unsigned num);
+	void Load(const NpzConverter& model, unsigned num, EncoderBunch &bunch);
 };
 
 }
