@@ -21,7 +21,7 @@ class EncoderDecoderLoader : public Loader {
     virtual BaseBestHypsPtr GetBestHyps(const God &god, const DeviceInfo &deviceInfo) const;
 
   private:
-    std::vector<std::unique_ptr<WeightsTransformer>> weights_; // MUST be indexed by gpu id. eg. weights_[2] is for gpu2
+    std::vector<std::unique_ptr<BaseWeights>> weights_; // MUST be indexed by gpu id. eg. weights_[2] is for gpu2
 };
 
 }

@@ -10,7 +10,12 @@
 namespace amunmt {
 namespace GPU {
 
-struct Weights {
+struct BaseWeights
+{
+};
+
+struct Weights : public BaseWeights
+{
 
   //////////////////////////////////////////////////////////////////////////////
   struct EncEmbeddings {
