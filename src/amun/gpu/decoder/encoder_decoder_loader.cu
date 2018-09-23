@@ -35,7 +35,7 @@ void EncoderDecoderLoader::Load(const God &god) {
     devicePool.enqueue([d, &path, this] {
         LOG(info->info("Loading model {} onto gpu {}", path, d));
         HANDLE_ERROR(cudaSetDevice(d));
-        weights_[d].reset(new Weights(path, config_, d));
+        weights_[d].reset(new WeightsTransformer(path, config_, d));
       });
   }
 }
@@ -43,7 +43,7 @@ void EncoderDecoderLoader::Load(const God &god) {
 EncoderDecoderLoader::~EncoderDecoderLoader()
 {
   for (unsigned d = 0; d < weights_.size(); ++d) {
-    const Weights *weights = weights_[d].get();
+    const WeightsTransformer *weights = weights_[d].get();
     if (weights) {
       HANDLE_ERROR(cudaSetDevice(d));
       weights_[d].reset(nullptr);
@@ -56,8 +56,10 @@ ScorerPtr EncoderDecoderLoader::NewScorer(const God &god, const DeviceInfo &devi
 
   HANDLE_ERROR(cudaSetDevice(d));
   unsigned tab = Has("tab") ? Get<unsigned>("tab") : 0;
+  const WeightsTransformer *t = weights_[d].get();
+  const Weights *weights = reinterpret_cast<const Weights*>(t);
   return ScorerPtr(new EncoderDecoder(god, name_, config_,
-                                      tab, *weights_[d]));
+                                      tab, *weights));
 }
 
 BaseBestHypsPtr EncoderDecoderLoader::GetBestHyps(const God &god, const DeviceInfo &deviceInfo) const {

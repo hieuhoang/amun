@@ -601,6 +601,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/src/amun/gpu/npz_converter.h</locationURI>
 		</link>
 		<link>
+			<name>src/amun/gpu/transformer</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>src/amun/gpu/types-gpu.cu</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/src/amun/gpu/types-gpu.cu</locationURI>
@@ -1654,6 +1659,16 @@
 			<name>src/amun/gpu/mblas/vector_wrapper.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/src/amun/gpu/mblas/vector_wrapper.h</locationURI>
+		</link>
+		<link>
+			<name>src/amun/gpu/transformer/model.cu</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/src/amun/gpu/transformer/model.cu</locationURI>
+		</link>
+		<link>
+			<name>src/amun/gpu/transformer/model.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/src/amun/gpu/transformer/model.h</locationURI>
 		</link>
 		<link>
 			<name>src/amun/3rd_party/blaze/config/Assertion.h</name>

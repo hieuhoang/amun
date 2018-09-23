@@ -99,6 +99,7 @@ cuda_add_executable(
   gpu/npz_converter.cu
   gpu/types-gpu.cu
 
+  gpu/transformer/model.cu
 
   common/loader_factory.cpp
   $<TARGET_OBJECTS:libcommon>

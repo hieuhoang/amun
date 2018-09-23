@@ -2,6 +2,7 @@
 
 #include "common/loader.h"
 #include "gpu/dl4mt/model.h"
+#include "gpu/transformer/model.h"
 
 namespace amunmt {
 namespace GPU {
@@ -20,7 +21,7 @@ class EncoderDecoderLoader : public Loader {
     virtual BaseBestHypsPtr GetBestHyps(const God &god, const DeviceInfo &deviceInfo) const;
 
   private:
-    std::vector<std::unique_ptr<Weights>> weights_; // MUST be indexed by gpu id. eg. weights_[2] is for gpu2
+    std::vector<std::unique_ptr<WeightsTransformer>> weights_; // MUST be indexed by gpu id. eg. weights_[2] is for gpu2
 };
 
 }
