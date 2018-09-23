@@ -15,6 +15,7 @@ WeightsTransformer::WeightsTransformer(const std::string& npzFile, const YAML::N
 
 
 WeightsTransformer::WeightsTransformer(const NpzConverter& model, const YAML::Node& config, unsigned device)
+: encoderBunches_(6)
 {
 	Load(model, 1);
 	Load(model, 2);
