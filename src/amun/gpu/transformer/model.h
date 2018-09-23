@@ -14,6 +14,8 @@ public:
 	WeightsTransformer(const std::string& npzFile, const YAML::Node& config,  unsigned device);
 	WeightsTransformer(const NpzConverter& model, const YAML::Node& config, unsigned device);
 
+protected:
+	void Load(const NpzConverter& model, unsigned num);
 };
 
 }
