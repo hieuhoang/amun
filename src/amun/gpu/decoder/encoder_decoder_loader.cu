@@ -35,7 +35,8 @@ void EncoderDecoderLoader::Load(const God &god) {
     devicePool.enqueue([d, &path, this] {
         LOG(info->info("Loading model {} onto gpu {}", path, d));
         HANDLE_ERROR(cudaSetDevice(d));
-        BaseWeights *weights = new Weights(path, config_, d);
+        //BaseWeights *weights = new Weights(path, config_, d);
+        BaseWeights *weights = new WeightsTransformer(path, config_, d);
         weights_[d].reset(weights);
       });
   }
