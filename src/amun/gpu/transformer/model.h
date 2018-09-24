@@ -13,21 +13,21 @@ class WeightsTransformer : public BaseWeights
 	struct EncoderBunch
 	{
 		std::shared_ptr<mblas::Tensor>
-			encoder_l1_ffn_W1,
-			encoder_l1_ffn_W2,
-			encoder_l1_ffn_b1,
-			encoder_l1_ffn_b2,
-			encoder_l1_ffn_ffn_ln_bias,
-			encoder_l1_ffn_ffn_ln_scale,
-			encoder_l1_self_Wk,
-			encoder_l1_self_Wo,
-			encoder_l1_self_Wo_ln_bias,
-			encoder_l1_self_Wo_ln_scale,
-			encoder_l1_self_Wq,
-			encoder_l1_self_Wv,
-			encoder_l1_self_bk,
-			encoder_l1_self_bo,
-			encoder_l1_self_bq;
+			ffn_W1,
+			ffn_W2,
+			ffn_b1,
+			ffn_b2,
+			ffn_ffn_ln_bias,
+			ffn_ffn_ln_scale,
+			self_Wk,
+			self_Wo,
+			self_Wo_ln_bias,
+			self_Wo_ln_scale,
+			self_Wq,
+			self_Wv,
+			self_bk,
+			self_bo,
+			self_bq;
 
 	};
 

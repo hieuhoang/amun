@@ -33,50 +33,50 @@ void WeightsTransformer::Load(const NpzConverter& model, unsigned num, EncoderBu
 	ss << num;
 	std::string numStr = ss.str();
 
-	bunch.encoder_l1_ffn_W1 = model.get("encoder_l" + numStr + "_ffn_W1", true);
-	cerr << bunch.encoder_l1_ffn_W1.get()->Debug(1) << endl;
+	bunch.ffn_W1 = model.get("encoder_l" + numStr + "_ffn_W1", true);
+	cerr << bunch.ffn_W1.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_ffn_W2 = model.get("encoder_l" + numStr + "_ffn_W2", true);
-	cerr << bunch.encoder_l1_ffn_W2.get()->Debug(1) << endl;
+	bunch.ffn_W2 = model.get("encoder_l" + numStr + "_ffn_W2", true);
+	cerr << bunch.ffn_W2.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_ffn_b1 = model.get("encoder_l" + numStr + "_ffn_b1", true);
-	cerr << bunch.encoder_l1_ffn_b1.get()->Debug(1) << endl;
+	bunch.ffn_b1 = model.get("encoder_l" + numStr + "_ffn_b1", true);
+	cerr << bunch.ffn_b1.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_ffn_b2 = model.get("encoder_l" + numStr + "_ffn_b2", true);
-	cerr << bunch.encoder_l1_ffn_b2.get()->Debug(1) << endl;
+	bunch.ffn_b2 = model.get("encoder_l" + numStr + "_ffn_b2", true);
+	cerr << bunch.ffn_b2.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_ffn_ffn_ln_bias = model.get("encoder_l" + numStr + "_ffn_ffn_ln_bias", true);
-	cerr << bunch.encoder_l1_ffn_ffn_ln_bias.get()->Debug(1) << endl;
+	bunch.ffn_ffn_ln_bias = model.get("encoder_l" + numStr + "_ffn_ffn_ln_bias", true);
+	cerr << bunch.ffn_ffn_ln_bias.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_ffn_ffn_ln_scale = model.get("encoder_l" + numStr + "_ffn_ffn_ln_scale", true);
-	cerr << bunch.encoder_l1_ffn_ffn_ln_scale.get()->Debug(1) << endl;
+	bunch.ffn_ffn_ln_scale = model.get("encoder_l" + numStr + "_ffn_ffn_ln_scale", true);
+	cerr << bunch.ffn_ffn_ln_scale.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_Wk = model.get("encoder_l" + numStr + "_self_Wk", true);
-	cerr << bunch.encoder_l1_self_Wk.get()->Debug(1) << endl;
+	bunch.self_Wk = model.get("encoder_l" + numStr + "_self_Wk", true);
+	cerr << bunch.self_Wk.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_Wo = model.get("encoder_l" + numStr + "_self_Wo", true);
-	cerr << bunch.encoder_l1_self_Wo.get()->Debug(1) << endl;
+	bunch.self_Wo = model.get("encoder_l" + numStr + "_self_Wo", true);
+	cerr << bunch.self_Wo.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_Wo_ln_bias = model.get("encoder_l" + numStr + "_self_Wo_ln_bias", true);
-	cerr << bunch.encoder_l1_self_Wo_ln_bias.get()->Debug(1) << endl;
+	bunch.self_Wo_ln_bias = model.get("encoder_l" + numStr + "_self_Wo_ln_bias", true);
+	cerr << bunch.self_Wo_ln_bias.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_Wo_ln_scale = model.get("encoder_l" + numStr + "_self_Wo_ln_scale", true);
-	cerr << bunch.encoder_l1_self_Wo_ln_scale.get()->Debug(1) << endl;
+	bunch.self_Wo_ln_scale = model.get("encoder_l" + numStr + "_self_Wo_ln_scale", true);
+	cerr << bunch.self_Wo_ln_scale.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_Wq = model.get("encoder_l" + numStr + "_self_Wq", true);
-	cerr << bunch.encoder_l1_self_Wq.get()->Debug(1) << endl;
+	bunch.self_Wq = model.get("encoder_l" + numStr + "_self_Wq", true);
+	cerr << bunch.self_Wq.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_Wv = model.get("encoder_l" + numStr + "_self_Wv", true);
-	cerr << bunch.encoder_l1_self_Wv.get()->Debug(1) << endl;
+	bunch.self_Wv = model.get("encoder_l" + numStr + "_self_Wv", true);
+	cerr << bunch.self_Wv.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_bk = model.get("encoder_l" + numStr + "_self_bk", true);
-	cerr << bunch.encoder_l1_self_bk.get()->Debug(1) << endl;
+	bunch.self_bk = model.get("encoder_l" + numStr + "_self_bk", true);
+	cerr << bunch.self_bk.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_bo = model.get("encoder_l" + numStr + "_self_bo", true);
-	cerr << bunch.encoder_l1_self_bo.get()->Debug(1) << endl;
+	bunch.self_bo = model.get("encoder_l" + numStr + "_self_bo", true);
+	cerr << bunch.self_bo.get()->Debug(1) << endl;
 
-	bunch.encoder_l1_self_bq = model.get("encoder_l" + numStr + "_self_bq", true);
-	cerr << bunch.encoder_l1_self_bq.get()->Debug(1) << endl;
+	bunch.self_bq = model.get("encoder_l" + numStr + "_self_bq", true);
+	cerr << bunch.self_bq.get()->Debug(1) << endl;
 
 
 
